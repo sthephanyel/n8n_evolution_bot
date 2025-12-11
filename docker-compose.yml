@@ -1,0 +1,115 @@
+# --------------------------------------------------------------------------------- #
+# COMANDOS ÚTEIS DOCKER
+
+# docker compose down -v
+# docker compose up -d
+# docker rm -f $(docker ps -aq)
+# docker rmi -f $(docker images -aq)
+# docker volume rm $(docker volume ls -q)
+# docker network rm $(docker network ls -q)
+# docker volume create n8n_data
+# --------------------------------------------------------------------------------- #
+# COMANDOS ÚTEIS PERMISSÕES - CASO Dê ERRO DE PERMISSÃO data_n8n
+
+# sudo ls -la /var/lib/docker/volumes/documentos_n8n_data/_data
+# sudo chown 1000:1000 /var/lib/docker/volumes/documentos_n8n_data/_data/config
+# sudo chmod 600 /var/lib/docker/volumes/documentos_n8n_data/_data/config
+# docker restart n8n
+
+# --------------------------------------------------------------------------------- #
+# EVOLUTION LINK LOGIN
+# http://0.0.0.0:8080/manager/login
+
+version: "3.8"
+
+services:
+  api:
+    container_name: evolution_api
+    image: evoapicloud/evolution-api:latest
+    restart: always
+    depends_on:
+      - redis
+      - postgres
+    ports:
+      - 8080:8080
+    volumes:
+      - evolution_instances:/evolution/instances
+    networks:
+      - evolution-net
+    env_file:
+      - .env
+    expose:
+      - 8080
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    networks:
+      - evolution-net
+    command: >
+      redis-server --port 6379 --appendonly yes
+    volumes:
+      - evolution_redis:/data
+    ports:
+      - 6379:6379
+
+  postgres:
+    container_name: postgres
+    image: postgres:17
+    networks:
+      - evolution-net
+    command: ["postgres", "-c", "max_connections=1000", "-c", "listen_addresses=*"]
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=usuarioTeste
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_DB=evolution
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    expose:
+      - 5432
+
+  n8n:
+    container_name: n8n
+    image: n8nio/n8n:latest
+    restart: always
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - 5678:5678
+    networks:
+      - evolution-net
+    environment:
+      # Host e portas
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+
+      # Timezone - mude de acordo com a preferencia
+      - GENERIC_TIMEZONE=America/Sao_Paulo
+
+      # Banco configurado para usar o Postgres existente
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=evolution
+      - DB_POSTGRESDB_USER=usuarioTeste
+      - DB_POSTGRESDB_PASSWORD=123456
+
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+volumes:
+  evolution_instances:
+  evolution_redis:
+  postgres_data:
+  n8n_data:
+
+networks:
+  evolution-net:
+    name: evolution-net
+    driver: bridge
