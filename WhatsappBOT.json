@@ -1,0 +1,3485 @@
+{
+  "name": "WhatsappBOT",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "174843a4-8ff7-477d-b047-03282f967c50",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -3136,
+        656
+      ],
+      "id": "f9157a45-79da-4d1f-a35e-9bafbe6a29cc",
+      "name": "Webhook",
+      "webhookId": "174843a4-8ff7-477d-b047-03282f967c50"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9b961d93-7cd0-4ee6-b86b-4bc12778f217",
+              "name": "msg.contactName",
+              "value": "={{ $json.body.data.pushName }}",
+              "type": "string"
+            },
+            {
+              "id": "4f4dfc7d-710f-4296-a30f-6cceffbd3571",
+              "name": "msg.number",
+              "value": "={{ $json.body.data.key.remoteJid }}",
+              "type": "string"
+            },
+            {
+              "id": "b37b2556-07e0-45f9-a093-d0c9fdbf16d3",
+              "name": "msg.text",
+              "value": "={{ $json.body.data.message.conversation }}",
+              "type": "string"
+            },
+            {
+              "id": "47cb901f-7457-4c30-9e77-0604cae287da",
+              "name": "msg.form_me",
+              "value": "={{ $json.body.data.key.fromMe }}",
+              "type": "boolean"
+            },
+            {
+              "id": "990bdf59-aae3-4a6b-bd0f-4876287ebc41",
+              "name": "msg.id",
+              "value": "={{ $json.body.data.key.id }}",
+              "type": "string"
+            },
+            {
+              "id": "76776735-2c84-4ce5-89c6-588223ac3eff",
+              "name": "msg.type",
+              "value": "={{ $json.body.data.messageType }}",
+              "type": "string"
+            },
+            {
+              "id": "39a2417b-5c4f-4b69-93fd-47bf742c4644",
+              "name": "msg.timestamp",
+              "value": "={{ $json.body.data.messageTimestamp.toDateTime('s').toISO() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2736,
+        640
+      ],
+      "id": "51e9d3d0-52ec-43df-b6d0-b39db82e56ef",
+      "name": "Response Whatsapp"
+    },
+    {
+      "parameters": {
+        "useCustomSchema": true,
+        "operation": "getAll",
+        "tableId": "categoria",
+        "matchType": "allFilters"
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        160,
+        160
+      ],
+      "id": "f0e0738b-a0a8-4492-96e2-c7f9bc90344b",
+      "name": "categorias",
+      "executeOnce": false,
+      "credentials": {
+        "supabaseApi": {
+          "id": "ELTKoxXXJqU8ZJVO",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Conectando com Supabase - CATEGORIA\n1. pega as categorias disponiveis\n2. filtra a lista\n3. retorna apenas 1 item para não gerar varios requests",
+        "height": 320,
+        "width": 1328,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        80,
+        16
+      ],
+      "id": "638b2b0e-9428-4cef-a444-870fbee0123c",
+      "name": "Sticky Note2",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "## Reseta o Redis - TESTE",
+        "height": 304,
+        "width": 896
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2096,
+        -160
+      ],
+      "id": "8f7a5e03-8c8f-4340-b079-0207bb4f68ad",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8080/message/sendText/pokemonstore",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $('Response Whatsapp').first().json.msg.number.split('@')[0] }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.mensagem }}\n\n{{ $('Buscar Parametros').first().json.List_array[0].parseJson().TXT_FINALIZAR }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1072,
+        160
+      ],
+      "id": "037e2fdf-24c6-439b-ba2a-ea2761538d0f",
+      "name": "Categorias MSG",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "8RX1oNTAzMKAH1Y2",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "useCustomSchema": true,
+        "operation": "getAll",
+        "tableId": "parametros",
+        "matchType": "allFilters"
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -848,
+        176
+      ],
+      "id": "b6970302-b505-452f-87de-6d459d2399ad",
+      "name": "parametros",
+      "credentials": {
+        "supabaseApi": {
+          "id": "ELTKoxXXJqU8ZJVO",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8080/message/sendText/pokemonstore",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $('Response Whatsapp').first().json.msg.number.split('@')[0] }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.TITLE_APRESENTACAO }} {{ $json.NOME_LOJA }} {{ $json.TXT_APRESENTACAO }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -560,
+        176
+      ],
+      "id": "0482b763-3823-4031-993f-415989604464",
+      "name": "Apresentacao MSG",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "8RX1oNTAzMKAH1Y2",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b08a69dd-ab00-42a7-887d-c123477800fe",
+              "name": "mensagem",
+              "value": "={{ $('categorias').all().map((item, i) => {\nreturn i+1 + '. ' + item.json.nome + ': ' + item.json.descricao\n}).join('\\n')\n }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        736,
+        160
+      ],
+      "id": "02a9c533-1e58-4cab-8b53-ac4b4b16b9fe",
+      "name": "Filtro"
+    },
+    {
+      "parameters": {
+        "jsCode": "const entries = $input.all().map(item => [item.json.nome, item.json.value]);\nconst parametros = Object.fromEntries(entries);\nreturn [{ json: parametros }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -704,
+        176
+      ],
+      "id": "590e40a5-d81c-47ba-aeeb-1055a09e3a9f",
+      "name": "Filtro Parametros"
+    },
+    {
+      "parameters": {
+        "content": "## Conectando com Supabase - APRESENTAÇÃO\n1. pega as informacoes do bd\n2. filtra a lista",
+        "height": 272,
+        "width": 1000,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -928,
+        64
+      ],
+      "id": "afea76be-db32-4f25-8379-c39041f2342c",
+      "name": "Sticky Note4",
+      "disabled": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        176,
+        1008
+      ],
+      "id": "728215d9-8c5a-4d24-bc8a-f5d0a11afdb4",
+      "name": "No Operation, do nothing1"
+    },
+    {
+      "parameters": {
+        "content": "## Conectando com Supabase - PRODUTOS\n1. pega as categorias disponiveis\n2. filtra a lista\n3. retorna apenas 1 item para não gerar varios requests",
+        "height": 352,
+        "width": 2208,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -192,
+        384
+      ],
+      "id": "eeb6716f-55a4-475d-b8b3-0fa73f15b2ae",
+      "name": "Sticky Note5",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b08a69dd-ab00-42a7-887d-c123477800fe",
+              "name": "mensagem",
+              "value": "={{ \n$('Produtos').all().map(\n  (item, i) => \n    {\n      return i+1 + '. ' + item.json.nome + ': ' + item.json.descricao + '\\n' + 'Por Apenas: ' + `R$ ${item.json.preco.toFixed(2)}`\n  + \" \" + [\"🛍️\",\"💰\",\"🎉\",\"🛒\",\"✨\",\"🔥\",\"🏷️\",\"🤑\",\"💳\",\"🎁\"][Math.floor(Math.random()*10)]\n    }\n  ).join('\\n')\n }}",
+              "type": "string"
+            },
+            {
+              "id": "d12ef82b-1293-4b32-9a66-65e8ca9ce32a",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1184,
+        512
+      ],
+      "id": "3523fa31-8fef-41a4-9bf7-08fa9e38b9ae",
+      "name": "Filtro1"
+    },
+    {
+      "parameters": {
+        "operation": "push",
+        "list": "=categorias",
+        "messageData": "={{ JSON.stringify($json.resultado) }}",
+        "tail": true
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        544,
+        160
+      ],
+      "id": "4589f674-3664-4b33-9a74-df91b9901da8",
+      "name": "Guardar Categorias",
+      "credentials": {
+        "redis": {
+          "id": "cC0oBS9kQVPcewFt",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2496,
+        1744
+      ],
+      "id": "742fb04b-7e7f-43d2-bade-1e787e3bfe58",
+      "name": "Wait1",
+      "webhookId": "6959d64a-7bda-4dc4-a72c-0eb7bdafd9e7"
+    },
+    {
+      "parameters": {
+        "operation": "push",
+        "list": "={{ $('Response Whatsapp').first().json.msg.number }}",
+        "messageData": "={{ JSON.stringify($('Response Whatsapp').first().json.msg) }}",
+        "tail": true
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -1824,
+        576
+      ],
+      "id": "db5b1d8b-d3ef-4b1b-8c72-d8f2d16a10f0",
+      "name": "Enviar Registro da mensagem",
+      "credentials": {
+        "redis": {
+          "id": "cC0oBS9kQVPcewFt",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "List_array",
+        "key": "={{ $('Response Whatsapp').first().json.msg.number }}",
+        "keyType": "list",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -1664,
+        496
+      ],
+      "id": "b96b9124-dafb-46e3-a806-5e96160c217e",
+      "name": "Buscar Registro de Mensagens",
+      "credentials": {
+        "redis": {
+          "id": "cC0oBS9kQVPcewFt",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "List_array",
+        "key": "=path",
+        "keyType": "list",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -1520,
+        576
+      ],
+      "id": "0de6ab9b-6228-4b6a-ab8e-74a70d5ffb25",
+      "name": "Buscar Caminho",
+      "credentials": {
+        "redis": {
+          "id": "cC0oBS9kQVPcewFt",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "push",
+        "list": "=path",
+        "messageData": "={{ JSON.stringify({'path': 0}) }}",
+        "tail": true
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        176
+      ],
+      "id": "ec10e982-9b76-4573-82d6-2ba86578259d",
+      "name": "Guardando Caminho Apresentação",
+      "credentials": {
+        "redis": {
+          "id": "cC0oBS9kQVPcewFt",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8d682de2-a795-4ace-842a-06e5fccdb696",
+              "name": "path_last_id",
+              "value": "={{ Number($('Buscar Caminho').item.json.List_array.last().parseJson().path) }}",
+              "type": "number"
+            },
+            {
+              "id": "18393323-3c37-4dd3-8880-91d1c3552496",
+              "name": "path_choice_id",
+              "value": "={{ Number($('Buscar Caminho').item.json.List_array.last().parseJson().choice) }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -896,
+        512
+      ],
+      "id": "e5dc3dae-47e4-4573-9ad7-f447a1c1342f",
+      "name": "Path Atual"
+    },
+    {
+      "parameters": {
+        "operation": "push",
+        "list": "=path",
+        "messageData": "={{ JSON.stringify({'path': 1}) }}",
+        "tail": true
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        1264,
+        160
+      ],
+      "id": "4c680690-15fe-43d0-8ada-10d06ce1576e",
+      "name": "Guardando Caminho Categoria",
+      "credentials": {
+        "redis": {
+          "id": "cC0oBS9kQVPcewFt",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8080/message/sendText/pokemonstore",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $('Response Whatsapp').first().json.msg.number.split('@')[0] }}"
+            },
+            {
+              "name": "text",
+              "value": "=Opção invalida! Por favor digite apenas o número correspondente do campo que deseja!"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2144,
+        608
+      ],
+      "id": "95d57563-40a2-4bba-8e8c-490d147b7702",
+      "name": "Opção Invalida",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "8RX1oNTAzMKAH1Y2",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "push",
+        "list": "=path",
+        "messageData": "={{ JSON.stringify({\n'path': 2,\n'choice': Number($('Response Whatsapp').first().json.msg.text.toLowerCase())\n}) }}",
+        "tail": true
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        1840,
+        512
+      ],
+      "id": "a983596c-facf-4ba8-a1f6-d37dd7d8be77",
+      "name": "Guardando Caminho Produto",
+      "credentials": {
+        "redis": {
+          "id": "cC0oBS9kQVPcewFt",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8080/message/sendText/pokemonstore",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $('Response Whatsapp').first().json.msg.number.split('@')[0] }}"
+            },
+            {
+              "name": "text",
+              "value": "=Obrigado por ter visitado a nossa loja. Até logo."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -784,
+        944
+      ],
+      "id": "c169fa23-f325-4bf3-b8c6-9d4329e16b3d",
+      "name": "Encerramento Pelo Usuario",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "8RX1oNTAzMKAH1Y2",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8080/message/sendText/pokemonstore",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $('Response Whatsapp').first().json.msg.number.split('@')[0] }}"
+            },
+            {
+              "name": "text",
+              "value": "=Devido ao tempo ocioso, esse bot será encerrado. Até logo."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -784,
+        1104
+      ],
+      "id": "0cc38d99-a965-417e-9171-830213430606",
+      "name": "Encerramento Osioso",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "8RX1oNTAzMKAH1Y2",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Encerramentos\n",
+        "height": 432,
+        "width": 1200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -848,
+        848
+      ],
+      "typeVersion": 1,
+      "id": "7391abda-92e1-48a5-8e12-3b7ee4c264e0",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "jsCode": "const texto = $input.all().map(item => item.json.mensagem)\n\nreturn [\n  {\n    json: {\n      mensagem: texto[0]\n    }\n  }\n];\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        512
+      ],
+      "id": "a1044c40-e8d0-4e90-a8b1-9c1c50696c14",
+      "name": "Filtro Produto"
+    },
+    {
+      "parameters": {
+        "jsCode": "const texto = $input.all().map(item => item.json.mensagem)\n\nreturn [\n  {\n    json: {\n      mensagem: texto[0]\n    }\n  }\n];\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        912,
+        160
+      ],
+      "id": "c0d3b988-5da3-45eb-8c6d-e58ffc7c8d6b",
+      "name": "Filtro Categoria"
+    },
+    {
+      "parameters": {
+        "jsCode": "// const entries = $input.all().map(item => [item.json.id, {\n//   'id': item.json.id,\n//   'nome': item.json.nome,\n//   'descricao': item.json.descricao,\n// }]);\n// const parametros = Object.fromEntries(entries);\n// return [{ json: parametros }];\n\n\n/** @type {Array<{id: number, nome: string, descricao: string}>} */\nlet novo_array = [];\n\n$input.all().map((i) => {\n  novo_array.push({\n    id: i.json.id,\n    nome: i.json.nome,\n    descricao: i.json.descricao,\n  });\n});\n\nreturn [{ json: { resultado: novo_array } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        368,
+        160
+      ],
+      "id": "42eb26ef-17db-40e7-b925-318f82b7823f",
+      "name": "Filtro Supabase Categoria"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "categorias",
+        "key": "=categorias",
+        "keyType": "list",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        64,
+        512
+      ],
+      "id": "d3c95566-b1a9-42e6-8f79-08b63fda88e2",
+      "name": "Buscar Categorias",
+      "credentials": {
+        "redis": {
+          "id": "cC0oBS9kQVPcewFt",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// const entries = $input.all().map(item => [item.json.id, {\n//   'id': item.json.id,\n//   'nome': item.json.nome,\n//   'descricao': item.json.descricao,\n// }]);\n// const parametros = Object.fromEntries(entries);\n// return [{ json: parametros }];\n\n\n/** @type {Array<{id: number, nome: string, descricao: string}>} */\nlet novo_array = [];\n\n$input.all().map((i) => {\n  novo_array.push({\n    id: i.json.id,\n    nome: i.json.nome,\n    descricao: i.json.descricao,\n  });\n});\n\nreturn [{ json: { resultado: novo_array } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        864,
+        512
+      ],
+      "id": "83d32dc0-f73c-405f-9cac-84e2ee6da716",
+      "name": "Filtro Supabase Categoria1"
+    },
+    {
+      "parameters": {
+        "operation": "push",
+        "list": "=produtos",
+        "messageData": "={{ JSON.stringify($json.resultado) }}",
+        "tail": true
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        1024,
+        512
+      ],
+      "id": "bfeadb9b-323a-47b5-b128-16d9b32bdd14",
+      "name": "Guardar Produtos",
+      "credentials": {
+        "redis": {
+          "id": "cC0oBS9kQVPcewFt",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2d0c9010-306f-4927-8c55-a8ac0e5e02a9",
+              "leftValue": "={{ \n  Number($('Response Whatsapp').first().json.msg.text) \n}}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        528,
+        992
+      ],
+      "id": "2b11d709-c6a6-4275-9ed8-ac6367c26d5e",
+      "name": "Verificando Valor Válido Produto"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2d0c9010-306f-4927-8c55-a8ac0e5e02a9",
+              "leftValue": "={{ \n  Number($('Response Whatsapp').first().json.msg.text.trim()) \n}}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -128,
+        512
+      ],
+      "id": "3bcddfe9-6a26-4449-8b34-557990cd7d6b",
+      "name": "Verificando Valor Válido Categoria"
+    },
+    {
+      "parameters": {
+        "content": "## Conectando com Supabase - DETALHES PRODUTOS",
+        "height": 432,
+        "width": 2288,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        464,
+        832
+      ],
+      "id": "88ceda3f-6c13-4f83-be96-ce925b39b61a",
+      "name": "Sticky Note7",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "produtos",
+        "key": "=produtos",
+        "keyType": "list",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        752,
+        992
+      ],
+      "id": "fd3df003-c5fa-45a8-bdc8-64acdefb261c",
+      "name": "Buscar Produto",
+      "credentials": {
+        "redis": {
+          "id": "cC0oBS9kQVPcewFt",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "55689fd6-433a-4f66-9b25-89b56a9e3585",
+              "name": "id_categoria",
+              "value": "={{ \n  JSON.parse($json.categorias.last())[\n    Math.max(0, Number($('Response Whatsapp').first().json.msg.text.trim()) - 1)\n  ].id \n}}\n",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        496,
+        432
+      ],
+      "id": "ce62a6a3-315d-4edf-b036-eb4848e0e677",
+      "name": "Index Produtos Filtro"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "55689fd6-433a-4f66-9b25-89b56a9e3585",
+              "name": "id_produto",
+              "value": "={{ JSON.parse($json.produtos.last())[Number($('Response Whatsapp').first().json.msg.text) - 1].id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1120,
+        896
+      ],
+      "id": "f3024f00-01c4-4a42-b5f7-c51b5f00bcef",
+      "name": "Index Produto Filtro"
+    },
+    {
+      "parameters": {
+        "useCustomSchema": true,
+        "operation": "get",
+        "tableId": "produtos",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ $json.id_produto }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1312,
+        976
+      ],
+      "id": "0296adb9-827f-4f02-9594-eb8b3be465bc",
+      "name": "Produto Selecionado",
+      "credentials": {
+        "supabaseApi": {
+          "id": "ELTKoxXXJqU8ZJVO",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8080/message/sendText/pokemonstore",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $('Response Whatsapp').first().json.msg.number.split('@')[0] }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.mensagem }}\n\n{{ $('Buscar Parametros').first().json.List_array[0].parseJson().TXT_VOLTAR }}\n{{ $('Buscar Parametros').first().json.List_array[0].parseJson().TXT_FINALIZAR }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1488,
+        512
+      ],
+      "id": "88edfb2f-05b0-459f-add1-74f49a596ecc",
+      "name": "Produtos MSG",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "8RX1oNTAzMKAH1Y2",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8080/message/sendText/pokemonstore",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $('Response Whatsapp').first().json.msg.number.split('@')[0] }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.resultado[0].nome }}: {{ $json.resultado[0].descricao }}\n{{ $json.resultado[0].desconto > 0 \n? `(De R$${Number($json.resultado[0].valor).toFixed(2)}) Por Apenas R$` +(Number($json.resultado[0].valor) - ($json.resultado[0].valor*(Number($json.resultado[0].desconto)/100))).toFixed(2)\n: $json.resultado[0].valor.toFixed(2) }} 😱\n{{ $json.resultado[0].desconto > 0 ? 'Com desconto de até '+ $json.resultado[0].desconto + '%' : '' }}\nCom Apenas {{ $json.resultado[0].quantidade }} no estoque 🫢\n\n\nCaso tenha se interessado pelo produto, pode conversar com nossa vendedora, para pegar mais detalhes através desse link:\n\nhttps://wa.me/987891854?text=Ol%C3%A1%2C%20tudo%20bem%3F%20Venho%20do%20ChatBot%20da%20ORRA%20Inova%20Arte%20%F0%9F%98%81%0AEsse%20produto%20me%20interessou%20bastante%3A%0AAlmofadas%20Pok%C3%A9mon%3A%20Pequenas%20e%20fofas%20almofadas%20Pok%C3%A9mon%0APor%20Apenas%3A%20R%2435.00%20%F0%9F%98%B1%0ACom%20Apenas%205%20no%20estoque%20%F0%9F%AB%A2\n\n\n{{ $('Buscar Parametros').first().json.List_array[0].parseJson().TXT_VOLTAR }}\n{{ $('Buscar Parametros').first().json.List_array[0].parseJson().TXT_FINALIZAR }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1664,
+        976
+      ],
+      "id": "24fabfc8-4bc8-4004-8351-b10a96746ba2",
+      "name": "Produtos MSG1",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "8RX1oNTAzMKAH1Y2",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// const entries = $input.all().map(item => [item.json.id, {\n//   'id': item.json.id,\n//   'nome': item.json.nome,\n//   'descricao': item.json.descricao,\n// }]);\n// const parametros = Object.fromEntries(entries);\n// return [{ json: parametros }];\n\n\n/** @type {Array<{id: number, nome: string, descricao: string}>} */\nlet novo_array = [];\n\n$input.all().map((i) => {\n  novo_array.push({\n    id: i.json.id,\n    nome: i.json.nome,\n    descricao: i.json.descricao,\n    imagem: i.json.image,\n    valor: i.json.preco,\n    quantidade: i.json.quantidade,\n    desconto: i.json.desconto\n  });\n});\n\nreturn [{ json: { resultado: novo_array } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1488,
+        976
+      ],
+      "id": "76679d6e-9f25-4972-85ec-8a5f05a8548f",
+      "name": "Filtro Supabase Produto"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "List_array",
+        "key": "={{ $('Response Whatsapp').first().json.msg.number }}",
+        "keyType": "list",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -2528,
+        672
+      ],
+      "id": "e7b71e5a-ca0e-43d1-85e6-6b4df7908ca1",
+      "name": "Buscar Registro de Mensagens1",
+      "credentials": {
+        "redis": {
+          "id": "cC0oBS9kQVPcewFt",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "List_array",
+        "key": "=path",
+        "keyType": "list",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -2384,
+        672
+      ],
+      "id": "8dd29d03-61b9-4d58-a719-41132a463332",
+      "name": "Buscar Caminho2",
+      "credentials": {
+        "redis": {
+          "id": "cC0oBS9kQVPcewFt",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "dbfeacac-3162-46ab-a009-954eb0782792",
+              "leftValue": "={{ Number($json.List_array.length) }}",
+              "rightValue": "={{ 0 }}",
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -2208,
+        560
+      ],
+      "id": "2b52320f-9fa8-4c20-b160-9a625f88657e",
+      "name": "Primeira Mensagem"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d230ed20-23ca-4389-8f1b-0f79ffbfd567",
+              "leftValue": "={{ $('Buscar Registro de Mensagens1').item.json.List_array.last().parseJson().id }}",
+              "rightValue": "={{ $('Response Whatsapp').first().json.msg.id }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "2a32e8fd-c299-4d4f-900c-69bc69e054a8",
+              "leftValue": "={{ Number($json.List_array.last().parseJson().path) }}",
+              "rightValue": "={{ 0 }}",
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -2048,
+        704
+      ],
+      "id": "b0274cdd-19b1-48ac-abb4-e617762d5e8b",
+      "name": "Mensagem Diferente"
+    },
+    {
+      "parameters": {
+        "operation": "push",
+        "list": "=parametros",
+        "messageData": "={{ JSON.stringify($('Filtro Parametros').item.json) }}",
+        "tail": true
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -384,
+        176
+      ],
+      "id": "80f78691-86ec-4f7e-a658-41e4847ea1bf",
+      "name": "Guardando Parametros",
+      "credentials": {
+        "redis": {
+          "id": "cC0oBS9kQVPcewFt",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "List_array",
+        "key": "=parametros",
+        "keyType": "list",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -1376,
+        496
+      ],
+      "id": "c34d3150-ac7b-4a91-a9ae-3507f057f335",
+      "name": "Buscar Parametros",
+      "credentials": {
+        "redis": {
+          "id": "cC0oBS9kQVPcewFt",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "push",
+        "list": "=path",
+        "messageData": "={{ JSON.stringify({\n'path': Number($('Buscar Caminho').item.json.List_array.last().parseJson().path - 1), \n'choice': Number($('Buscar Caminho').item.json.List_array[\n$('Buscar Caminho').item.json.List_array.length - 2\n].parseJson().choice)\n}) }}",
+        "tail": true
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -944,
+        1344
+      ],
+      "id": "b6e22514-6893-42fa-86a5-ea670d2222bb",
+      "name": "Voltando Guardando (Ajustar)",
+      "credentials": {
+        "redis": {
+          "id": "cC0oBS9kQVPcewFt",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "1b8b8d5d-e107-4459-824d-3dde7995966e",
+              "leftValue": "={{ Number($json.path_last_id) }}",
+              "rightValue": "={{ 1 }}",
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1120,
+        1360
+      ],
+      "id": "701dc66f-7e6e-413d-8847-fac41e2d0f8e",
+      "name": "Caminho para Redirecionar (Ajustar)"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "06fa2edb-b430-4ce0-8aa1-63c270ce577c",
+                    "leftValue": "={{ $('Response Whatsapp').first().json.msg.timestamp }}",
+                    "rightValue": "={{ $now.minus(120, 'seconds') }}",
+                    "operator": {
+                      "type": "dateTime",
+                      "operation": "before"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Tempo Ocioso"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "d8ea59d7-9242-41cc-89e2-0ba2554d95e3",
+                    "leftValue": "={{ $json.List_array.length }}",
+                    "rightValue": "={{ 0 }}",
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Primeiro Contato"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "0e2ef861-8201-47c1-aa67-18a1625e5ac9",
+                    "leftValue": "={{ $json.List_array.length }}",
+                    "rightValue": "={{ 0 }}",
+                    "operator": {
+                      "type": "number",
+                      "operation": "gt"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Proximos Contatos"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "Esperar"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -1088,
+        480
+      ],
+      "id": "fe97bd41-b67a-41d5-803a-c9bdcff93b9b",
+      "name": "Mensagem Divisão"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "0e2ef861-8201-47c1-aa67-18a1625e5ac9",
+                    "leftValue": "={{ $json.path_last_id }}",
+                    "rightValue": "={{ 0 }}",
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Escolher Categorias"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "682acc27-4a0b-4501-b5f6-fb08c5890d88",
+                    "leftValue": "={{ $('Response Whatsapp').first().json.msg.text.trim().toLowerCase() }}",
+                    "rightValue": "=0",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Voltando Path"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "30d6c423-18f8-4d7d-a81a-4c7e3c25ca0f",
+                    "leftValue": "={{ $('Response Whatsapp').first().json.msg.text.trim().toLowerCase() }}",
+                    "rightValue": "encerrar",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Encerrando"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "097e07d2-0b38-447e-91ac-543f71e9928c",
+                    "leftValue": "={{ $json.path_last_id }}",
+                    "rightValue": "={{ 1 }}",
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Produtos da Categoria"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "29d22430-efc1-4fa7-ac70-1caa143a1cb3",
+                    "leftValue": "={{ $json.path_last_id }}",
+                    "rightValue": "={{ 2 }}",
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Detalhes Produto"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "6c60016d-d61b-4b48-9477-910d00c8294b",
+                    "leftValue": "={{ $json.path_last_id }}",
+                    "rightValue": "={{ 3 }}",
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Pontos Principais do Produto"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "Esperar"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -720,
+        448
+      ],
+      "id": "c4e24e2a-d494-4938-bd32-3f3d49fb5767",
+      "name": "Caminhos"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "0e2ef861-8201-47c1-aa67-18a1625e5ac9",
+                    "leftValue": "={{ $json.List_array.last().parseJson().path }}",
+                    "rightValue": "={{ 1 }}",
+                    "operator": {
+                      "type": "number",
+                      "operation": "lte"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Categorias"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "d98d2b16-be48-4a36-b806-2a43da4cbd17",
+                    "leftValue": "={{ $json.List_array.last().parseJson().path }}",
+                    "rightValue": "={{ 2 }}",
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Produto"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "ee703c8b-8b7c-42b0-865c-368c747940ad",
+                    "leftValue": "={{ $json.List_array.last().parseJson().path }}",
+                    "rightValue": "={{ 3 }}",
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Detalhes"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -960,
+        1600
+      ],
+      "id": "9b9cd3d2-4ec6-41b3-a96c-fda261c43e1d",
+      "name": "Caminhos Voltar"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "55689fd6-433a-4f66-9b25-89b56a9e3585",
+              "name": "id_categoria",
+              "value": "={{ \n  JSON.parse($json.categorias.last())[\n    Math.max(0, Number($('Buscar Caminho Voltar').item.json.List_array.last().parseJson().choice)-1)\n  ].id \n}}\n",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -496,
+        1376
+      ],
+      "id": "150cb2b4-d157-4237-8c39-37e71175ee87",
+      "name": "Index Produtos Cache"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "List_array",
+        "key": "=path",
+        "keyType": "list",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -1136,
+        1600
+      ],
+      "id": "b9d2e826-31d5-46dc-9089-e91c9bc8c4e9",
+      "name": "Buscar Caminho Voltar",
+      "credentials": {
+        "redis": {
+          "id": "cC0oBS9kQVPcewFt",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "categorias",
+        "key": "=categorias",
+        "keyType": "list",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -656,
+        1376
+      ],
+      "id": "346561c5-0c77-4a06-8d1f-b9257d80faed",
+      "name": "Buscar Categorias Cache",
+      "credentials": {
+        "redis": {
+          "id": "cC0oBS9kQVPcewFt",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "produtos",
+        "key": "=produtos",
+        "keyType": "list",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -656,
+        1648
+      ],
+      "id": "8ba08055-71d5-4005-a761-09d3c4134616",
+      "name": "Buscar Produto Cache",
+      "credentials": {
+        "redis": {
+          "id": "cC0oBS9kQVPcewFt",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "55689fd6-433a-4f66-9b25-89b56a9e3585",
+              "name": "id_produto",
+              "value": "={{ JSON.parse($json.produtos.last())[\nNumber($('Buscar Caminho Voltar').item.json.List_array.last().parseJson().choice)-1\n].id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -496,
+        1648
+      ],
+      "id": "45b24845-5358-463f-b08b-180f7f844321",
+      "name": "Index Produto Filtro1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c7b59a84-bffa-46b5-9658-bb04401c405c",
+              "leftValue": "={{ $('Response Whatsapp').first().json.msg.text.toLowerCase() }}",
+              "rightValue": "=0",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1648,
+        512
+      ],
+      "id": "29269fdd-7129-4a6b-9668-38855794950b",
+      "name": "Zero"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c7b59a84-bffa-46b5-9658-bb04401c405c",
+              "leftValue": "={{ $('Response Whatsapp').first().json.msg.text.toLowerCase() }}",
+              "rightValue": "=0",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2288,
+        1008
+      ],
+      "id": "a30cf043-8d89-4815-ab5a-c06eef2a43e1",
+      "name": "Zero1"
+    },
+    {
+      "parameters": {
+        "content": "## Voltar\n",
+        "height": 496,
+        "width": 912
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1232,
+        1312
+      ],
+      "typeVersion": 1,
+      "id": "42ea947d-5b7a-4779-bd5d-5974943b559c",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Inválidos\n",
+        "height": 240,
+        "width": 224,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2080,
+        544
+      ],
+      "typeVersion": 1,
+      "id": "3df41be9-ecdb-4913-860d-9865815b270b",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "content": "## DADOS EM CACHE",
+        "height": 288,
+        "width": 664,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1872,
+        432
+      ],
+      "id": "820c5d7f-0e8f-4098-9e98-7d5795c75546",
+      "name": "Sticky Note9",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "## TIMER\n",
+        "height": 208,
+        "width": 192
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2448,
+        1680
+      ],
+      "typeVersion": 1,
+      "id": "7dbfcc99-11fa-43d8-91fb-ccf64a6997ad",
+      "name": "Sticky Note10"
+    },
+    {
+      "parameters": {
+        "content": "## ROTAS PRINCIPAIS DE CONTROLE",
+        "height": 352,
+        "width": 664,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1152,
+        400
+      ],
+      "id": "72c47878-3126-4a3d-a7ea-a6a00f7b8d51",
+      "name": "Sticky Note11",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "## VERIFICANDO SE A MENSAGEM É NOVA",
+        "height": 368,
+        "width": 696,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2592,
+        480
+      ],
+      "id": "0973b11b-6e00-4419-87b6-ade239e08c13",
+      "name": "Sticky Note12",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "key": "={{ $('Response Whatsapp').first().json.msg.number }}"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -608,
+        1008
+      ],
+      "id": "1a4d7cbc-10ea-4ad8-80b0-02cd0248b9e9",
+      "name": "CLEAN CACHE MENSAGEM",
+      "credentials": {
+        "redis": {
+          "id": "cC0oBS9kQVPcewFt",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "key": "categorias"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -464,
+        960
+      ],
+      "id": "3da0dd2c-71ec-44ce-9438-1ef54711b895",
+      "name": "CLEAN CACHE CATEGORIAS",
+      "credentials": {
+        "redis": {
+          "id": "cC0oBS9kQVPcewFt",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "key": "path"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -304,
+        1008
+      ],
+      "id": "891f996a-b49f-45b2-9bb4-8a448a1c929e",
+      "name": "CLEAN CACHE PATH",
+      "credentials": {
+        "redis": {
+          "id": "cC0oBS9kQVPcewFt",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "key": "produtos"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -144,
+        960
+      ],
+      "id": "d4f82c21-802b-4b26-a618-47a814b7d887",
+      "name": "CLEAN CACHE PRODUTOS",
+      "credentials": {
+        "redis": {
+          "id": "cC0oBS9kQVPcewFt",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "key": "parametros"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        16,
+        1008
+      ],
+      "id": "d167f402-6da1-43e4-aa36-fa52e4c1b3a3",
+      "name": "CLEAN CACHE PARAMETROS",
+      "credentials": {
+        "redis": {
+          "id": "cC0oBS9kQVPcewFt",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "key": "558587891854@s.whatsapp.net"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -2048,
+        -48
+      ],
+      "id": "09d65dd9-a4a5-478f-a874-659cd3677c7a",
+      "name": "CLEAN CACHE MENSAGEM1",
+      "credentials": {
+        "redis": {
+          "id": "cC0oBS9kQVPcewFt",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "key": "categorias"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -1888,
+        -96
+      ],
+      "id": "b9fd028b-e49c-4d23-a472-c10f8202304d",
+      "name": "CLEAN CACHE CATEGORIAS1",
+      "credentials": {
+        "redis": {
+          "id": "cC0oBS9kQVPcewFt",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "key": "path"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -1728,
+        -48
+      ],
+      "id": "6047d260-51c1-4e0d-bcec-97cad6abc2aa",
+      "name": "CLEAN CACHE PATH1",
+      "credentials": {
+        "redis": {
+          "id": "cC0oBS9kQVPcewFt",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "key": "produtos"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -1568,
+        -96
+      ],
+      "id": "cee85ad0-4d64-4fb5-b275-5036f01c99b4",
+      "name": "CLEAN CACHE PRODUTOS1",
+      "credentials": {
+        "redis": {
+          "id": "cC0oBS9kQVPcewFt",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "key": "parametros"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -1408,
+        -48
+      ],
+      "id": "db488402-15a1-421a-ba88-df3da0152d7d",
+      "name": "CLEAN CACHE PARAMETROS1",
+      "credentials": {
+        "redis": {
+          "id": "cC0oBS9kQVPcewFt",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2496,
+        1488
+      ],
+      "id": "0e06b765-5708-4c29-a218-31f90f719473",
+      "name": "Wait",
+      "webhookId": "6959d64a-7bda-4dc4-a72c-0eb7bdafd9e7"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2688,
+        1744
+      ],
+      "id": "5335473a-fbd6-427c-baaa-9c37adf90828",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2448,
+        640
+      ],
+      "id": "256c9362-73c6-465a-bfe1-859844f2699b",
+      "name": "Wait2",
+      "webhookId": "6959d64a-7bda-4dc4-a72c-0eb7bdafd9e7"
+    },
+    {
+      "parameters": {
+        "content": "## TIMER\n",
+        "height": 208,
+        "width": 192
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2448,
+        1424
+      ],
+      "typeVersion": 1,
+      "id": "e1bc19d1-5d35-45e7-b12d-52b285cdb3d0",
+      "name": "Sticky Note13"
+    },
+    {
+      "parameters": {
+        "content": "## TIMER\n",
+        "height": 208,
+        "width": 192
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2400,
+        576
+      ],
+      "typeVersion": 1,
+      "id": "b5107371-a2c4-4e0d-8f12-7fb16a2222df",
+      "name": "Sticky Note14"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5e498719-d853-47df-ac77-5819ed3f2174",
+              "leftValue": "={{ $json.body.data.key.fromMe }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -2976,
+        656
+      ],
+      "id": "3bfd6df2-c672-42cb-983f-54a1e5eb2994",
+      "name": "Mensagem Própria ?"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -2768,
+        832
+      ],
+      "id": "62c72a80-cdf4-4552-a3f4-650a14ea66bd",
+      "name": "No Operation, do nothing2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d86d3302-c2af-44af-8985-416ffd57602c",
+              "leftValue": "={{ JSON.parse($json.categorias.last()).length }}",
+              "rightValue": "={{ Number($('Response Whatsapp').first().json.msg.text) }}",
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        272,
+        512
+      ],
+      "id": "23a5d2d0-4a4e-4161-a8ab-c20acb34e4eb",
+      "name": "Valor Index Existe 1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "dc710d45-7390-4ac0-90f3-4114cfb0781c",
+              "leftValue": "={{ JSON.parse($json.produtos.last()).length }}",
+              "rightValue": "={{ Number($('Response Whatsapp').last().json.msg.text) }}",
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        944,
+        992
+      ],
+      "id": "8da1c495-d94f-4f09-a917-2bf96b045d7f",
+      "name": "Valor Index Existe 2"
+    },
+    {
+      "parameters": {
+        "useCustomSchema": true,
+        "operation": "get",
+        "tableId": "produtos",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "categoria_id",
+              "keyValue": "={{ $json.id_categoria }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        704,
+        512
+      ],
+      "id": "8b7a3b02-e463-4e01-83a1-9eb5a3089b7c",
+      "name": "Produtos",
+      "credentials": {
+        "supabaseApi": {
+          "id": "ELTKoxXXJqU8ZJVO",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c05761d9-8cb7-4637-8bd4-ac497458501e",
+              "leftValue": "={{ $('Filtro Supabase Produto').item.json.resultado[0].imagem }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1824,
+        976
+      ],
+      "id": "70f9f898-104e-4365-80c7-d9935d837ee0",
+      "name": "Imagem Produto"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8080/message/sendMedia/pokemonstore",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"number\":\"{{ $('Response Whatsapp').first().json.msg.number.split('@')[0] }}\",\n  \"mediatype\":\"image\",\n  \"mimetype\":\".PNG\",\n  \"media\":\"{{ $('Filtro Supabase Produto').item.json.resultado[0].imagem }}\",\n  \"fileName\":\"{{ $('Filtro Supabase Produto').item.json.resultado[0].nome.replace(' ','_').toLowerCase() }}.png\",\n  \"delay\":0,\n  \"linkPreview\":true,\n  \"mentionsEveryOne\":true\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2016,
+        912
+      ],
+      "id": "d20d584c-6199-42ac-afd1-c5c7884e6afb",
+      "name": "Produtos IMG MSG1",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "8RX1oNTAzMKAH1Y2",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8080/message/sendText/pokemonstore",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $('Response Whatsapp').first().json.msg.number.split('@')[0] }}"
+            },
+            {
+              "name": "text",
+              "value": "Sem imagem no momento, logo estaremos resolvendo isso "
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2016,
+        1088
+      ],
+      "id": "5966c607-91fd-4ba6-b9ea-56faeedeac5c",
+      "name": "Produtos IMG MSG2",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "8RX1oNTAzMKAH1Y2",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "push",
+        "list": "=path",
+        "messageData": "={{ JSON.stringify({\n'path': 3,\n'choice': Number($('Response Whatsapp').first().json.msg.text.toLowerCase())\n}) }}",
+        "tail": true
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        2544,
+        1008
+      ],
+      "id": "2ad09d54-8645-43c2-a114-b5d954e9e23a",
+      "name": "Guardando Caminho Detalhe Produto",
+      "credentials": {
+        "redis": {
+          "id": "cC0oBS9kQVPcewFt",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## DETALHES PRODUTOS - Redirecionamento...",
+        "height": 288,
+        "width": 2288,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        1328
+      ],
+      "id": "04d44033-10be-4d59-acff-eacd309d0c75",
+      "name": "Sticky Note15",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8080/message/sendButtons/pokemonstore",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"number\":\"5585987891854\",\n  \"title\":\"titulo teste\",\n  \"description\":\"descricao teste\",\n  \"footer\":\"final texto\",\n  \"buttons\": [\n    {\n        \"type\": \"reply\",\n        \"title\": \"Titulo\",\n        \"displayText\": \"Teste Button\",\n        \"id\": \"1\"\n    }\n  ],\n  \"delay\":123,\n  \"linkPreview\":true\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -16,
+        1424
+      ],
+      "id": "5aed9234-0866-48f1-8ad9-b3be1c30f6af",
+      "name": "Produtos IMG MSG",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "8RX1oNTAzMKAH1Y2",
+          "name": "Header Auth account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8080/message/sendText/pokemonstore",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $('Response Whatsapp').first().json.msg.number.split('@')[0] }}"
+            },
+            {
+              "name": "text",
+              "value": "=Nome: {{ $json.resultado[0].nome }}\nDescrição: {{ $json.resultado[0].descricao }}\nValor: R${{ $json.resultado[0].valor.toFixed(2) }}\nDesconto: {{ $json.resultado[0].desconto }}\nQuantidade: {{ $json.resultado[0].quantidade }}\n\n{{ $('Buscar Parametros').first().json.List_array[0].parseJson().TXT_VOLTAR }}\n{{ $('Buscar Parametros').first().json.List_array[0].parseJson().TXT_FINALIZAR }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        176,
+        1424
+      ],
+      "id": "7aab885d-c33f-459a-9196-d1417028fae9",
+      "name": "Produtos MSG2",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "8RX1oNTAzMKAH1Y2",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        368,
+        1424
+      ],
+      "id": "8083f8cb-0568-4e18-bc55-e19279a66984",
+      "name": "No Operation, do nothing3"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Mensagem Própria ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Response Whatsapp": {
+      "main": [
+        [
+          {
+            "node": "Buscar Registro de Mensagens1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "categorias": {
+      "main": [
+        [
+          {
+            "node": "Filtro Supabase Categoria",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Categorias MSG": {
+      "main": [
+        [
+          {
+            "node": "Guardando Caminho Categoria",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "parametros": {
+      "main": [
+        [
+          {
+            "node": "Filtro Parametros",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtro": {
+      "main": [
+        [
+          {
+            "node": "Filtro Categoria",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtro Parametros": {
+      "main": [
+        [
+          {
+            "node": "Apresentacao MSG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Apresentacao MSG": {
+      "main": [
+        [
+          {
+            "node": "Guardando Parametros",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtro1": {
+      "main": [
+        [
+          {
+            "node": "Filtro Produto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar Categorias": {
+      "main": [
+        [
+          {
+            "node": "Filtro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar Registro da mensagem": {
+      "main": [
+        [
+          {
+            "node": "Buscar Registro de Mensagens",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Registro de Mensagens": {
+      "main": [
+        [
+          {
+            "node": "Buscar Caminho",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Caminho": {
+      "main": [
+        [
+          {
+            "node": "Buscar Parametros",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardando Caminho Apresentação": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Path Atual": {
+      "main": [
+        [
+          {
+            "node": "Caminhos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardando Caminho Categoria": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Opção Invalida": {
+      "main": [
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardando Caminho Produto": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Encerramento Osioso": {
+      "main": [
+        [
+          {
+            "node": "CLEAN CACHE MENSAGEM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Encerramento Pelo Usuario": {
+      "main": [
+        [
+          {
+            "node": "CLEAN CACHE MENSAGEM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtro Produto": {
+      "main": [
+        [
+          {
+            "node": "Produtos MSG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtro Categoria": {
+      "main": [
+        [
+          {
+            "node": "Categorias MSG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtro Supabase Categoria": {
+      "main": [
+        [
+          {
+            "node": "Guardar Categorias",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Categorias": {
+      "main": [
+        [
+          {
+            "node": "Valor Index Existe 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtro Supabase Categoria1": {
+      "main": [
+        [
+          {
+            "node": "Guardar Produtos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar Produtos": {
+      "main": [
+        [
+          {
+            "node": "Filtro1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificando Valor Válido Categoria": {
+      "main": [
+        [
+          {
+            "node": "Buscar Categorias",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Opção Invalida",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificando Valor Válido Produto": {
+      "main": [
+        [
+          {
+            "node": "Buscar Produto",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Opção Invalida",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Produto": {
+      "main": [
+        [
+          {
+            "node": "Valor Index Existe 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Index Produtos Filtro": {
+      "main": [
+        [
+          {
+            "node": "Produtos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Index Produto Filtro": {
+      "main": [
+        [
+          {
+            "node": "Produto Selecionado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Produto Selecionado": {
+      "main": [
+        [
+          {
+            "node": "Filtro Supabase Produto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Produtos MSG": {
+      "main": [
+        [
+          {
+            "node": "Zero",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtro Supabase Produto": {
+      "main": [
+        [
+          {
+            "node": "Produtos MSG1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Produtos MSG1": {
+      "main": [
+        [
+          {
+            "node": "Imagem Produto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Registro de Mensagens1": {
+      "main": [
+        [
+          {
+            "node": "Buscar Caminho2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Caminho2": {
+      "main": [
+        [
+          {
+            "node": "Primeira Mensagem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Primeira Mensagem": {
+      "main": [
+        [
+          {
+            "node": "Enviar Registro da mensagem",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mensagem Diferente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mensagem Diferente": {
+      "main": [
+        [
+          {
+            "node": "Enviar Registro da mensagem",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardando Parametros": {
+      "main": [
+        [
+          {
+            "node": "Guardando Caminho Apresentação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Parametros": {
+      "main": [
+        [
+          {
+            "node": "Mensagem Divisão",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Voltando Guardando (Ajustar)": {
+      "main": [
+        [
+          {
+            "node": "Buscar Caminho Voltar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Caminho para Redirecionar (Ajustar)": {
+      "main": [
+        [
+          {
+            "node": "Voltando Guardando (Ajustar)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Buscar Caminho Voltar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mensagem Divisão": {
+      "main": [
+        [
+          {
+            "node": "Encerramento Osioso",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "parametros",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Path Atual",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Caminhos": {
+      "main": [
+        [
+          {
+            "node": "categorias",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Caminho para Redirecionar (Ajustar)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Encerramento Pelo Usuario",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Verificando Valor Válido Categoria",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Verificando Valor Válido Produto",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Produtos IMG MSG",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Caminhos Voltar": {
+      "main": [
+        [
+          {
+            "node": "categorias",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Buscar Categorias Cache",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Buscar Produto Cache",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Index Produtos Cache": {
+      "main": [
+        [
+          {
+            "node": "Produtos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Caminho Voltar": {
+      "main": [
+        [
+          {
+            "node": "Caminhos Voltar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Categorias Cache": {
+      "main": [
+        [
+          {
+            "node": "Index Produtos Cache",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Produto Cache": {
+      "main": [
+        [
+          {
+            "node": "Index Produto Filtro1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Index Produto Filtro1": {
+      "main": [
+        [
+          {
+            "node": "Produto Selecionado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Zero": {
+      "main": [
+        [
+          {
+            "node": "Guardando Caminho Produto",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Zero1": {
+      "main": [
+        [
+          {
+            "node": "Guardando Caminho Detalhe Produto",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CLEAN CACHE MENSAGEM": {
+      "main": [
+        [
+          {
+            "node": "CLEAN CACHE CATEGORIAS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CLEAN CACHE CATEGORIAS": {
+      "main": [
+        [
+          {
+            "node": "CLEAN CACHE PATH",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CLEAN CACHE PATH": {
+      "main": [
+        [
+          {
+            "node": "CLEAN CACHE PRODUTOS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CLEAN CACHE PRODUTOS": {
+      "main": [
+        [
+          {
+            "node": "CLEAN CACHE PARAMETROS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CLEAN CACHE PARAMETROS": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CLEAN CACHE MENSAGEM1": {
+      "main": [
+        [
+          {
+            "node": "CLEAN CACHE CATEGORIAS1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CLEAN CACHE CATEGORIAS1": {
+      "main": [
+        [
+          {
+            "node": "CLEAN CACHE PATH1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CLEAN CACHE PATH1": {
+      "main": [
+        [
+          {
+            "node": "CLEAN CACHE PRODUTOS1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CLEAN CACHE PRODUTOS1": {
+      "main": [
+        [
+          {
+            "node": "CLEAN CACHE PARAMETROS1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Buscar Registro de Mensagens1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "Buscar Caminho Voltar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mensagem Própria ?": {
+      "main": [
+        [
+          {
+            "node": "Response Whatsapp",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Valor Index Existe 1": {
+      "main": [
+        [
+          {
+            "node": "Index Produtos Filtro",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Opção Invalida",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Valor Index Existe 2": {
+      "main": [
+        [
+          {
+            "node": "Index Produto Filtro",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Opção Invalida",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Produtos": {
+      "main": [
+        [
+          {
+            "node": "Filtro Supabase Categoria1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Imagem Produto": {
+      "main": [
+        [
+          {
+            "node": "Produtos IMG MSG1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Produtos IMG MSG2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Produtos IMG MSG1": {
+      "main": [
+        [
+          {
+            "node": "Zero1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Produtos IMG MSG2": {
+      "main": [
+        [
+          {
+            "node": "Zero1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardando Caminho Detalhe Produto": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Produtos IMG MSG": {
+      "main": [
+        [
+          {
+            "node": "Produtos MSG2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Produtos MSG2": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "031a0fb5-ebf3-405d-825e-65c0fcd859cf",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "dab618033304a75ada1762978e73092baed6f8808d9c03b698f4119f00771ebe"
+  },
+  "id": "NaumqZjcewFZMLWg",
+  "tags": []
+}
